@@ -1,5 +1,8 @@
 extends partials/_layout
 
 block content
-	.container
-		h1 Hello, #{user.displayName}!
+	#app.container.flex.cl.center-both
+		h1.text-center Hello, #{user.displayName}!
+		p Search for a song:
+		input(type='text' placeholder='Song name')
+		a.btn-bright(href='#') Visualize

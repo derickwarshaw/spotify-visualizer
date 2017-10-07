@@ -1,0 +1,13 @@
+#app {
+	input {
+		width: 50%;
+		border: none;
+		border-bottom: 1px solid black;
+		transition: 0.2s ease all;
+
+		&:focus {
+			outline: none;
+			width: 75%;
+		}
+	}
+}

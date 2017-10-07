@@ -9,9 +9,10 @@
 @import 'partials/_helpers';
 @import 'partials/_nav';
 
-// Landing
+// Custom page styles
 
-@import 'partials/_landing';
+@import 'partials/pages/_landing';
+@import 'partials/pages/_app';
 
 // Media Queries
 

@@ -26,9 +26,14 @@ small {
 	color: darken($white, 25%);
 }
 
+.text-center {
+	text-align: center;
+}
+
 // Buttons
 
 .btn {
+	position: relative;
 	border: 1px solid white;
 	border-radius: 35px;
 	text-decoration: none;
@@ -53,6 +58,25 @@ small {
 
 	&:after {
 		position: absolute;
+		display: none;
+		content: '→';
+		right: 0px;
+	}
+}
+
+.btn-bright {
+	@extend .btn;
+	border: 1px solid $spotifyGreen;
+	background-color: $spotifyGreen;
+	color: white;
+
+	&:hover {
+		background-color: $spotifyGreen;
+	}
+
+	&:after {
+		position: absolute;
+		color: white;
 		display: none;
 		content: '→';
 		right: 0px;
