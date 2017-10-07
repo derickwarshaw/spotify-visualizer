@@ -1,24 +1,29 @@
-var gulp        = require('gulp');
-var browserSync = require('browser-sync').create();
-var sass        = require('gulp-sass');
-var pug = require('gulp-pug');
+var gulp = require('gulp');
+var gls = require('gulp-live-server');
+var sass = require('gulp-sass');
 var autoprefix = require('gulp-autoprefixer');
 var cssmin = require('gulp-cssmin');
-var filter = require('gulp-filter')
 var rename = require('gulp-rename');
-var imagemin = require('gulp-imagemin');
 var jsmin = require('gulp-jsmin');
+var livereload = require('gulp-livereload');
 
-gulp.task('js', function () {
-    return gulp.src('./app/js/*.js')
-        .pipe(jsmin())
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('./dist/js'))
-});
+gulp.task('serve', ['sass', 'js'], function() {
+    var server = gls('index.js', undefined, 1111);
+    server.start();
+    livereload.listen();
+   
+    gulp.watch(['./index.js', './routes/*.js'], function() {
+        console.log('index.js changed');
+        server.start.bind(server)();
+    });
 
-gulp.task('js-watch', ['js'], function (done) {
-    browserSync.reload();
-    done();
+    gulp.watch('./app/scss/**/*.scss', ['sass']);
+
+    gulp.watch('./app/js/**/*.js', ['js']);
+
+    // gulp.watch('./views/**/*.pug', function(file) {
+    //  livereload.reloadPage();
+    // });
 });
 
 gulp.task('sass', function () {
@@ -30,48 +35,10 @@ gulp.task('sass', function () {
         .pipe(gulp.dest('./dist/css'));
 });
 
-gulp.task('sass-watch', ['sass'], function (done) {
-    browserSync.reload();
-    done();
+gulp.task('js', function() {
+    return gulp.src('./app/js/*.js')
+        .pipe(jsmin())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('./dist/js'))
+        .pipe(livereload());
 });
-
-gulp.task('templates', function() {
-    return gulp.src('./app/templates/*.pug')
-        .pipe(pug())
-        .pipe(filter(function (file) {
-            return !/\/_/.test(file.path) && !/^_/.test(file.relative);
-        }))
-        .pipe(gulp.dest('./'));
-});
-
-gulp.task('pug-watch', ['templates'], function (done) {
-    browserSync.reload();
-    done();
-});
-
-gulp.task('fonts', function() {
-    return gulp.src('./app/fonts/*')
-        .pipe(gulp.dest('./dist/fonts'));
-});
-
-gulp.task('imgs', function() {
-    return gulp.src('./app/imgs/**/*')
-        .pipe(imagemin())
-        .pipe(gulp.dest('./dist/imgs'));
-});
-
-gulp.task('watch', ['templates','sass','js'], function () {
-
-    browserSync.init({
-        server: {
-            baseDir: "./"
-        }
-    });
-
-    gulp.watch("./app/js/*.js", ['js-watch']);
-    gulp.watch("./app/templates/**/*.pug", ['pug-watch']);
-    gulp.watch("./app/scss/**/*.scss", ['sass-watch'])
-});
-
-// only run 'imgs' task when you build, it takes forever
-gulp.task('build', ['templates','sass', 'js', 'imgs', 'fonts']);
