@@ -1,0 +1,60 @@
+// Flexbox classes
+
+.flex {
+	display: flex;
+}
+
+.cl {
+	flex-direction: column;
+}
+
+.center-both {
+	align-items: center;
+	justify-content: center;
+}
+
+// Container
+
+.container-small {
+	width: 80%;
+	margin: 0 auto;
+}
+
+// Typography
+
+small {
+	color: darken($white, 25%);
+}
+
+// Buttons
+
+.btn {
+	border: 1px solid white;
+	border-radius: 35px;
+	text-decoration: none;
+	color: inherit;
+
+	padding: 15px 30px;
+	margin: 10px;
+	transition: 0.2s ease all;
+
+	&:hover {
+		border: 1px solid $spotifyGreen;
+		background-color: $spotifyGreen;
+		color: white;
+		text-indent: -10px;
+		padding-right: 40px;
+
+		&:after {
+			display: inline-block;
+			right: 15px;
+		}
+	}
+
+	&:after {
+		position: absolute;
+		display: none;
+		content: '→';
+		right: 0px;
+	}
+}

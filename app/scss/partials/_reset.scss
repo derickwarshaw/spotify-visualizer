@@ -1,0 +1,15 @@
+* {
+	box-sizing: border-box;
+	font-family: 'Hind', sans-serif;
+}
+
+body {
+	margin: 0;
+}
+
+// Sets font family for h1-h6
+@for $index from 1 through 6 {
+  h#{$index}{
+    font-family: 'Montserrat', sans-serif;
+  }
+}

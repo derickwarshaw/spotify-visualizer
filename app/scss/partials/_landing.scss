@@ -1,0 +1,10 @@
+#landing {
+	height: 100vh;
+	color: darken(white, 5%);
+	background-color: lighten(black, 5%);
+
+	.btn {
+		position: relative;
+		cursor: pointer;
+	}
+}
