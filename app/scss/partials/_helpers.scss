@@ -40,7 +40,7 @@ small {
 	color: inherit;
 
 	padding: 15px 30px;
-	margin: 10px;
+	margin: 20px;
 	transition: 0.2s ease all;
 
 	&:hover {
@@ -61,6 +61,10 @@ small {
 		display: none;
 		content: '→';
 		right: 0px;
+	}
+
+	&:focus {
+		outline: none;
 	}
 }
 

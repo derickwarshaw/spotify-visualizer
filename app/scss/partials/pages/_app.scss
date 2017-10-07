@@ -1,13 +1,17 @@
 #app {
+	height: 100vh;
 	input {
-		width: 50%;
 		border: none;
 		border-bottom: 1px solid black;
 		transition: 0.2s ease all;
+		text-align: center;
 
 		&:focus {
 			outline: none;
-			width: 75%;
 		}
+	}
+
+	button {
+		cursor: pointer;
 	}
 }
