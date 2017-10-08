@@ -7,8 +7,6 @@ Created on Fri Oct  6 00:56:38 2017
 import sys
 import json
 import numpy as np
-import matplotlib.pyplot as plot
-
     
 class Segment:
     def __init__(self, st, dur, conf, mv, mvd, mvs, timb):
@@ -119,8 +117,8 @@ def main():
   #  with open(filename, "r") as my_file:
   #      contents = my_file.read()
         
-        contents = sys.stdin.readLines()
-        j = json.loads(contents)
+        contents = sys.stdin.readlines()
+        j = json.loads(contents[0])
         segments = []
         for s in j["segments"]:
             segments.append(Segment(
@@ -132,24 +130,18 @@ def main():
                     s["loudness_start"],
                     s["timbre"]))
         
-        plot.figure(figsize=(16,6))
-        plot.axhline(0, color="black")
+        
         x = [s.start for s in segments]
-        plot.xticks(np.arange(min(x), max(x)+1, 5))
         y0 = [s.timbre[0] for s in segments]
-        plot.plot(x, y0, 'k,')
         s1 = blur([s.timbre[1] for s in segments], 15)
         s2 = blur([s.timbre[2] for s in segments], 15)
         s4 = blur([s.timbre[4] for s in segments], 15)
   #     y = [s1[i]-s2[i]-s4[i] + y0[i] for i in range(len(s1))]
         y = [s1[i]-s2[i]-s4[i] for i in range(len(segments))]
-        plot.plot(x, y, 'k--')
         y = blur([((0.5)**(-s.max_vol/6))*100 for s in segments], 5)
-        plot.plot(x, y, 'r--')
         step = smooth(x, y)
         x = [p[0] for p in step]
         y = [p[1] for p in step]
-        plot.plot(x, y, 'k')
         actions = {}
         for i in range(1, len(step)):
             dy = step[i][1] - step[i-1][1]
