@@ -22,6 +22,7 @@ block content
 		$(document).ready(function() {
 			$.post('/testAnalysis', {id: songID}, function(data) {
 				console.log(data)
-				setTimeout(TO, interval)
+				startPlayback(data)
+				window.open("#{song.body.tracks.items[0].external_urls.spotify}")
 			})
 		})

@@ -130,7 +130,7 @@ function changeBG(opacity){
     renderer.setClearColorHex(0xffffff,opacity);
 }
 
-function data(data) {
+function makeMap(data) {
     var map = new Map()
     var keyval = []
     var sets = data.toString().replace(/\s+/g, '').split(";")
@@ -140,11 +140,10 @@ function data(data) {
     }
     return map
 }
-var map = data("2.55,excite;7.33,relax;21.22,excite;30.29,relax;32.66,excite;55.77,relax;75.37,excite;87.39,relax;88.65,excite;99.63,relax;101.51,excite;106.23,relax;114.0,excite;131.37,excite;141.07,relax;160.71,excite;208.46,relax;214.33,excite;227.78,relax")
-var keys = Array.from(map.keys())
+var map
+var keys
 
 var index = 0
-var interval = keys[index]*1000
 var period = 0
 
 var TO = function timeOut() {
@@ -157,7 +156,16 @@ var TO = function timeOut() {
         setTimeout(TO,interval)
     index++;
 }
-//setTimeout(TO, interval)
+
+function startPlayback(data) {
+    console.log('started playback')
+    map = makeMap(data)
+    keys = Array.from(map.keys())
+    interval = keys[index]*1000
+
+    setTimeout(TO, interval)
+    console.log("started timeout")
+}
 
 function doAction(param){
     switch(param) {
