@@ -24,7 +24,10 @@ function init() {
     scene.add(light);
 
     initMountain();
-    initCloud();
+    initCloud1();
+    initCloud2();
+    initCloud3();
+    initCloud4();
     initIsland();   
     initCamera();
     initRenderer();
@@ -83,10 +86,10 @@ var cloud3 = null;
 function initCloud3() {
     var loader = new THREE.JSONLoader();
     loader.load('/dist/js/meshes/cloud.json', function(geometry, materials) {
-        cloud = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial(materials, wireframe=true));
-        cloud.position.x = 4.5;
-        cloud.position.y = .33;
-        cloud.material.color.setStyle('white');
+        cloud3 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial(materials, wireframe=true));
+        cloud3.position.x = 4.5;
+        cloud3.position.y = .33;
+        cloud3.material.color.setStyle('white');
         scene.add(cloud);
     });
 }
@@ -144,11 +147,13 @@ index = 0
 interval = keys[index]*1000
 
 var TO = function timeOut() {
-    doAction(map.get(keys[index++s]));
+    doAction(map.get(keys[index]));
     console.log("fk ur mom")
-    interval = (keys[index]-keys[index-1])*1000
+    if(index<keys.length)
+        interval = (keys[index+1]-keys[index])*1000;
     if(index!=keys.length)
         setTimeout(TO,interval)
+    index++;
 }
 setTimeout(TO, interval)
 
@@ -204,7 +209,7 @@ function animateMountainHeight(){
 }
 
 function rotateMesh() {
-    if (!mountain || !cloud) {
+    if (!mountain) {
         return;
     }
     //mountain.rotation.y -= SPEED;
