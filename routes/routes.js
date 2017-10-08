@@ -1,23 +1,6 @@
 var passport = require('passport')
 
-var SpotifyWebApi = require('spotify-web-api-node')
-
-var spotifyApi = new SpotifyWebApi({
-	clientId: process.env.CLIENT_ID,
-	clientSecret: process.env.CLIENT_SECRET,
-	redirectUri: 'http://localhost:3000/callback'
-})
-
-// Get an access token and 'save' it using a setter
-spotifyApi.clientCredentialsGrant()
-	.then(function(data) {
-		console.log('The access token is ' + data.body['access_token']);
-		spotifyApi.setAccessToken(data.body['access_token']);
-	}, function(err) {
-		console.log('Something went wrong!', err);
-	});
-
-module.exports = function(app) {
+module.exports = function(app, spotifyApi) {
 	var bodyParser = require('body-parser')
 	app.use(bodyParser.json())
 	app.use(bodyParser.urlencoded({
@@ -53,30 +36,77 @@ module.exports = function(app) {
 		})
 	})
 
-	app.get('/app/testSearch', ensureAuthenticated, function(req, res) {
-		spotifyApi.searchTracks('artist:Love')
-			.then(function(data) {
-				res.render('app', {
-					user: req.user,
-					searchData: data.body
+	// app.get('/app/testSearch', ensureAuthenticated, function(req, res) {
+	// 	spotifyApi.searchTracks('artist:Love')
+	// 		.then(function(data) {
+	// 			res.render('app', {
+	// 				user: req.user,
+	// 				searchData: data.body
+	// 			})
+	// 		}, function(err) {
+	// 			console.log('Something went wrong!', err);
+	// 		});
+	// })
+
+	app.get('/app/visualizer', ensureAuthenticated, function(req, res) {
+		console.log(req.query)
+		spotifyApi.searchTracks(req.query.song)
+			.then(function(song) {
+				var id = song.body.tracks.items[0].id
+				console.log("song id: " + id)
+
+			 //    spotifyApi.getAudioAnalysisForTrack(id, function(err, data) {
+			 //    	console.log(data.length)
+				// })
+				res.render('visualizer', {
+					song: song
 				})
-			}, function(err) {
-				console.log('Something went wrong!', err);
-			});
+			})
 	})
 
-	app.post('/app', ensureAuthenticated, function(req, res) {
-		spotifyApi.searchTracks(req.body.song)
-			.then(function(data) {
-				res.send(data)
-			}, function(err) {
-				console.log('Something went wrong!', err);
-			});
+	app.post('/testAnalysis', ensureAuthenticated, function(req, res) {
+		spotifyApi.getAudioAnalysisForTrack(req.body.id, function(err, analysis) {
+			if (err)
+				console.log(err)
+			console.log(Object.keys(analysis.body))
+			
+			var spawn = require('child_process').spawn,
+				py = spawn('python', ['./parser.py']),
+				dataString = ''
+
+			py.stdout.on('data', function(data) {
+				console.log("new data: "+data)
+				dataString += data.toString()
+			})
+			py.stdout.on('error',function(){
+				console.log('error!')
+			})
+			py.stdout.on('end', function() {
+				console.log("finished parsing data: "+dataString)
+				res.send(dataString)
+			})
+			py.stdin.write(JSON.stringify(analysis.body))
+			py.stdin.end()
+		})
 	})
 
-	app.get('/app/visualizer', /*ensureAuthenticated, */function(req, res) {
-		res.render('visualizer')
-	})
+	// app.post('/app/initPlayback', ensureAuthenticated, function(req,res) {
+	// 	spotifyApi.getMyCurrentPlaybackState({market: 'US'},function(err, data) {
+	// 		if (err) {
+	// 			console.log(err)
+	// 		}
+			
+	// 		if (data.body.is_playing) {
+	// 			spotifyApi.pause(function(err, data) {
+	// 				if (err)
+	// 					console.log(err)
+	// 				console.log(JSON.stringify(data))
+	// 			})
+	// 		}
+
+	// 		res.redirect('/app/visualizer')
+	// 	})
+	// })
 
 	// Simple route middleware to ensure user is authenticated.
 	//   Use this route middleware on any resource that needs to be protected.  If
