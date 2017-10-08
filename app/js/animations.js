@@ -157,7 +157,7 @@ var TO = function timeOut() {
         setTimeout(TO,interval)
     index++;
 }
-setTimeout(TO, interval)
+//setTimeout(TO, interval)
 
 function doAction(param){
     switch(param) {

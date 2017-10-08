@@ -22,5 +22,6 @@ block content
 		$(document).ready(function() {
 			$.post('/testAnalysis', {id: songID}, function(data) {
 				console.log(data)
+				setTimeout(TO, interval)
 			})
 		})
