@@ -25,7 +25,7 @@ function init() {
 
 function initCamera() {
     camera = new THREE.PerspectiveCamera(70, WIDTH / HEIGHT, 1, 100);
-    camera.position.set(-5, 4, 14); //control the y coordinate to adjust the actual height of the camera aka the angle that we look down with. x is how far away
+    camera.position.set(-8, 4, 14); //control the y coordinate to adjust the actual height of the camera aka the angle that we look down with. x is how far away
     camera.lookAt(scene.position);
 }
 
@@ -38,12 +38,13 @@ function initMountain() {
     var loader = new THREE.JSONLoader();
     loader.load('/dist/js/meshes/mountainrange.json', function(geometry, materials) {
         mountain = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial(materials, wireframe=true));
-        mountain.scale.x = mountain.scale.y = mountain.scale.z = 0.79;
-        mountain.position.y = 0.5
-        mountain.translation = THREE.GeometryUtils.center(geometry);
+         mountain.scale.x = mountain.scale.y = mountain.scale.z = 0.79;
+        // mountain.position.y = 0.5
+        // mountain.translation = THREE.GeometryUtils.center(geometry);
         scene.add(mountain);
-        console.log(mountain)   
+        //console.log(mountain)   
         calcYCoords();
+        calcUsefulYCoords();
     });
 }
 
@@ -52,8 +53,8 @@ function initCloud() {
     var loader = new THREE.JSONLoader();
     loader.load('/dist/js/meshes/cloud.json', function(geometry, materials) {
         cloud = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial(materials, wireframe=true));
-        cloud.scale.x = cloud.scale.y = cloud.scale.z = 0.1;
-        cloud.translation = THREE.GeometryUtils.center(geometry);
+        cloud.position.x = 4.5;
+        cloud.position.y = .33;
         scene.add(cloud);
     });
 }
@@ -63,9 +64,9 @@ function initIsland() {
     var loader = new THREE.JSONLoader();
     loader.load('/dist/js/meshes/island.json', function(geometry, materials) {
         island = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial(materials, wireframe=true));
-        island.scale.x = island.scale.y = island.scale.z = 0.81;
-        island.position.y = -4.76
-        island.translation = THREE.GeometryUtils.center(geometry);
+        island.scale.x = island.scale.y = island.scale.z = 0.79;
+        // island.position.y = -4.76
+        // island.translation = THREE.GeometryUtils.center(geometry);
         
         scene.add(island);
             })
@@ -84,7 +85,7 @@ function calcYCoords(){
         console.log('no mountain')
         return;
     }
-    console.log(mountain.geometry.vertices.length)
+    //console.log(mountain.geometry.vertices.length)
     for(var k = 0; k < mountain.geometry.vertices.length; k++){
         allYPoints.push(mountain.geometry.vertices[k].y)        
     }
@@ -92,20 +93,23 @@ function calcYCoords(){
 
 function calcUsefulYCoords() {
     var yMin = ( Math.max(allYPoints) - Math.min(allYPoints) ) * 0.8;
-    if(mountain.geometry.vertices[k].y > yMin) {
-            usefulYCoords.push(k)
+    for(var i = 0; i < allYPoints.length; i++){
+        if(mountain.geometry.vertices[i].y > yMin) {
+            usefulYCoords.push(i)
         }
+    }
+    
 }
 
 function animateMountainHeight(){
     if(!mountain){
         return;
     }
-
     for(var j = 0; j < usefulYCoords.length; j++){
-        mountain.geometry.vertices[usefulYCoords[j]].y += getRandomInt(-3, 3)
         mountain.geometry.vertices.verticesNeedUpdate = true;
-        //console.log(mountain.geometry.vertices[zPoints[j]].z);
+        mountain.geometry.vertices[usefulYCoords[j]].y += .1;
+        
+        console.log(mountain.geometry.vertices[zPoints[j]].y);
     }
 }
 
@@ -136,7 +140,7 @@ function rotateMesh() {
 
 function render() {
     requestAnimationFrame(render);
-    rotateMesh(); 
+    rotateMesh();
     animateMountainHeight();    
     renderer.render(scene, camera);
 }
