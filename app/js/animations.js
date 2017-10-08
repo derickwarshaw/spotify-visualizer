@@ -24,7 +24,10 @@ function init() {
     scene.add(light);
 
     initMountain();
-    initCloud();
+    initCloud1();
+    initCloud2();
+    initCloud3();
+    initCloud4();
     initIsland();   
     initCamera();
     initRenderer();
@@ -48,20 +51,58 @@ function initMountain() {
     loader.load('/dist/js/meshes/mountainrange.json', function(geometry, materials) {
         mountain = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial(materials, wireframe=true));
         mountain.scale.x = mountain.scale.y = mountain.scale.z = 0.79;
+        mountain.material.color.setStyle('grey');
         scene.add(mountain);   
         calcYCoords();
         calcUsefulYCoords();
     });
 }
 
-var cloud = null;
-function initCloud() {
+var cloud1 = null;
+function initCloud1() {
     var loader = new THREE.JSONLoader();
     loader.load('/dist/js/meshes/cloud.json', function(geometry, materials) {
-        cloud = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial(materials, wireframe=true));
-        cloud.position.x = 4.5;
-        cloud.position.y = .33;
+        cloud1 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial(materials, wireframe=true));
+        cloud1.position.x = 4.5;
+        cloud1.position.y = .33;
+        cloud1.material.color.setStyle('white');
+        scene.add(cloud1);
+    });
+}
+
+var cloud2 = null;
+function initCloud2() {
+    var loader = new THREE.JSONLoader();
+    loader.load('/dist/js/meshes/cloud.json', function(geometry, materials) {
+        cloud2 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial(materials, wireframe=true));
+        cloud2.position.x = 4.5;
+        cloud2.position.y = .33;
+        cloud2.material.color.setStyle('white');
+        scene.add(cloud2);
+    });
+}
+
+var cloud3 = null;
+function initCloud3() {
+    var loader = new THREE.JSONLoader();
+    loader.load('/dist/js/meshes/cloud.json', function(geometry, materials) {
+        cloud3 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial(materials, wireframe=true));
+        cloud3.position.x = 4.5;
+        cloud3.position.y = .33;
+        cloud3.material.color.setStyle('white');
         scene.add(cloud);
+    });
+}
+
+var cloud4 = null;
+function initCloud4() {
+    var loader = new THREE.JSONLoader();
+    loader.load('/dist/js/meshes/cloud.json', function(geometry, materials) {
+        cloud4 = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial(materials, wireframe=true));
+        cloud4.position.x = 4.5;
+        cloud4.position.y = .33;
+        cloud4.material.color.setStyle('white');
+        scene.add(cloud4);
     });
 }
 
@@ -70,9 +111,23 @@ function initIsland() {
     var loader = new THREE.JSONLoader();
     loader.load('/dist/js/meshes/island.json', function(geometry, materials) {
         island = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial(materials, wireframe=true));
-        island.scale.x = island.scale.y = island.scale.z = 0.79;        
+        island.scale.x = island.scale.y = island.scale.z = 0.79;
+        island.material.color.setStyle('burlywood');    
         scene.add(island);
             })
+}
+
+function rgbToHex(R,G,B) {return toHex(R)+toHex(G)+toHex(B)}
+function toHex(n) {
+ n = parseInt(n,10);
+ if (isNaN(n)) return "00";
+ n = Math.max(0,Math.min(n,255));
+ return "0123456789ABCDEF".charAt((n-n%16)/16)
+      + "0123456789ABCDEF".charAt(n%16);
+}
+
+function changeBG(opacity){
+    renderer.setClearColorHex(0xffffff,opacity);
 }
 
 function data(data) {
@@ -94,9 +149,11 @@ interval = keys[index]*1000
 var TO = function timeOut() {
     doAction(map.get(keys[index]));
     console.log("fk ur mom")
-    interval = (keys[index]-keys[index-1])*1000
+    if(index<keys.length)
+        interval = (keys[index+1]-keys[index])*1000;
     if(index!=keys.length)
         setTimeout(TO,interval)
+    index++;
 }
 setTimeout(TO, interval)
 
@@ -152,7 +209,7 @@ function animateMountainHeight(){
 }
 
 function rotateMesh() {
-    if (!mountain || !cloud) {
+    if (!mountain) {
         return;
     }
     //mountain.rotation.y -= SPEED;

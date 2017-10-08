@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct  6 00:56:38 2017
+Created on Sun Oct  8 00:01:40 2017
 
 @author: Dhruva
 """
@@ -115,7 +115,6 @@ def main():
 # =============================================================================
         j = json.loads(contents)
         segments = []
-        print(len(j))
         for s in j["segments"]:
             segments.append(Segment(
                     s["start"],
@@ -149,6 +148,27 @@ def main():
         mean_vol_std = np.mean(y_std_vol)
         plot.plot(x, y_std_vol, 'r--')
         plot.axhline(mean_vol_std, color="red")
+        change_regions = []
+        i = 0
+        while i < len(y_std_vol):
+            offset = 0
+            region = []
+            while(y_std_vol[i+offset] > mean_vol_std):
+                region.append(i+offset)                
+                offset += 1
+            if(len(region) > 0):
+                change_regions.append(region)
+            i += offset
+            i += 1
+        criticals = []
+        for region in change_regions:
+            time = x[y_std_vol.index(np.amax([y_std_vol[i] for i in region]))]
+            criticals.append(time)
+        s=""
+        for t in criticals:
+            s += str.format("{},{};", round(t, 2), "AAAA")
+        s = s[:-1]
+        print(s)
         
 #        step = smooth(x, y_blur)
 #        x_step = [p[0] for p in step]
