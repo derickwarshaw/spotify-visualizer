@@ -14,9 +14,9 @@ $(document).ready( function() {
 	// })
 })
 
-function initPlayback() {
-	$.post('/app/initPlayback', function(data) {
-		//$('#test').text(data.body.device.id)
-		console.log(data)
-	})
-}
+// function initPlayback() {
+// 	$.post('/app/initPlayback', function(data) {
+// 		//$('#test').text(data.body.device.id)
+// 		console.log(data)
+// 	})
+// }
