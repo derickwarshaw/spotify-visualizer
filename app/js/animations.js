@@ -1,16 +1,13 @@
 var scene, camera, renderer;
-
 var WIDTH  = window.innerWidth;
 var HEIGHT = window.innerHeight;
-
 var SPEED = 0.01;
 
 function init() {
     scene = new THREE.Scene();
-
-var light = new THREE.DirectionalLight( 0xffffff );
-light.position.set( 0, 1, 1 ).normalize();
-scene.add(light);
+    var light = new THREE.DirectionalLight( 0xffffff );
+    light.position.set( 0, 1, 1 ).normalize();
+    scene.add(light);
 
     initMountain();
     initCloud();
@@ -32,22 +29,6 @@ function initRenderer() {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(WIDTH, HEIGHT);
 }
-
-// function initLights() {
-//     var light = new THREE.AmbientLight(0xffffff);
-//     scene.add(light);
-// }
-
-
-
-// var mesh = null;
-// function initMesh() {
-//     var loader = new THREE.BufferGeometryLoader();
-//         loader.load("../JASON.json", function (g) {
-//             var mesh = new THREE.Mesh(g, new THREE.MeshBasicMaterial({color:0xffffff}));
-//             scene.add(mesh);
-//     });
-// }
 var mountain = null;
 function initMountain() {
     var loader = new THREE.JSONLoader();
@@ -70,37 +51,10 @@ function initCloud() {
     });
 }
 
-// instantiate a loaders
-// var loader = new THREE.BufferGeometryLoader();
-
-// // load a resource
-// loader.load(
-//     // resource URL
-//     'models/json/pressure.json',
-//     // Function when resource is loaded
-//     function ( geometry ) {
-//         var material = new THREE.MeshLambertMaterial( { color: 0xF5F5F5 } );
-//         var object = new THREE.Mesh( geometry, material );
-//         scene.add( object );
-//     },
-//     // Function called when download progresses
-//     function ( xhr ) {
-//         console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-//     },
-//     // Function called when download errors
-//     function ( xhr ) {
-//         console.log( 'An error happened' );
-//     }
-// );
-
-// console.log(mountain.geometry.)
-
-
 function rotateMesh() {
     if (!mountain) {
         return;
     }
-
     //mesh.rotation.x -= SPEED * 2;
     mountain.rotation.y -= SPEED;
     cloud.rotation.y -= SPEED;
