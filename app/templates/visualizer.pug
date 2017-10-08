@@ -1,6 +1,18 @@
 extends partials/_layout
 
 block content
-	pre= deviceData
+	style.
+		html {
+			width: 100%;
+			height: 100%;
+
+			background: #f49242; /* Old browsers */
+			background: -moz-linear-gradient(top,  #f49242 0%, #f4eb42 100%); /* FF3.6-15 */
+			background: -webkit-linear-gradient(top,  #f49242 0%,#f4eb42 100%); /* Chrome10-25,Safari5.1-6 */
+			background: linear-gradient(to bottom,  #f49242 0%,#f4eb42 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f49242', endColorstr='#f4eb42',GradientType=0 ); /* IE6-9 */
+		}
+	#canvas
 	script(src='/dist/js/three.min.js')
+	script(src='/dist/js/Tween.js')
 	script(src='/dist/js/animations.min.js')
