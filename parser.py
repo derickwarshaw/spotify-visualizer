@@ -118,6 +118,7 @@ def main():
   #      contents = my_file.read()
         
         contents = sys.stdin.readlines()
+        #print(contents)
         j = json.loads(contents[0])
         segments = []
         for s in j["segments"]:
@@ -129,8 +130,6 @@ def main():
                     s["loudness_max_time"],
                     s["loudness_start"],
                     s["timbre"]))
-        
-        
         x = [s.start for s in segments]
         y0 = [s.timbre[0] for s in segments]
         s1 = blur([s.timbre[1] for s in segments], 15)
@@ -140,6 +139,7 @@ def main():
         y = [s1[i]-s2[i]-s4[i] for i in range(len(segments))]
         y = blur([((0.5)**(-s.max_vol/6))*100 for s in segments], 5)
         step = smooth(x, y)
+        print("slfdisjdlkf")
         x = [p[0] for p in step]
         y = [p[1] for p in step]
         actions = {}
@@ -155,6 +155,7 @@ def main():
             s += str.format("{},{};", round(key, 2), actions[key])
         s = s[:-1]
         print(s)
+        
     
     
 if __name__ == "__main__":
