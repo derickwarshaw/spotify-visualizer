@@ -6,7 +6,6 @@ Created on Fri Oct  6 00:56:38 2017
 import sys
 import json
 import numpy as np
-
     
 class Segment:
     def __init__(self, st, dur, conf, mv, att, mvs, timb):
@@ -39,6 +38,7 @@ def blur(vals, rad):
         ind += 1
     return result
 
+
 def median(vals, rad):
     if(rad == 0 or 2*rad +1 > len(vals)):
         return vals
@@ -63,6 +63,7 @@ def stddev(starts, vals, rad):
     while (ind < len(vals)):
         while(starts[ind] - starts[back_ind+1] > rad):
             back_ind += 1
+
         neighbors = []
         for i in range(back_ind, 2*ind-back_ind+1):
             if(0 <= i < len(vals)):
@@ -90,6 +91,7 @@ def main():
         beats.append(b["start"])
         
 
+
     x = [s.start for s in segments]
     
     y = [s.timbre[1]-s.timbre[2]-s.timbre[4] for s in segments]
@@ -103,6 +105,8 @@ def main():
     y_std_vol = stddev(x, y_vblur, .75)
     mean_vol = np.mean(y_std_vol)
     y_std_vol = [elem/mean_vol for elem in y_std_vol]
+
+
     
     prod = [y_std_timb[i] * y_std_vol[i] for i in range(len(y_std_timb))]
     

@@ -77,9 +77,8 @@ function initCloud2() {
         cloud2.position.z = 4;
         cloud2.material.color.setStyle('white');
         scene.add(cloud2);
-    });
-}
-
+    }
+                
 var cloud3 = null;
 function initCloud3() {
     var loader = new THREE.JSONLoader();
@@ -102,9 +101,10 @@ function initCloud4() {
         cloud4.position.y = 2;
         cloud4.position.z = -6;
         cloud4.material.color.setStyle('white');
-        scene.add(cloud4);
+        scene.add(cloud4); 
     });
 }
+
 
 var island = null;
 function initIsland() {
