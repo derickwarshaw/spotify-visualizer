@@ -16,3 +16,11 @@ block content
 	script(src='/dist/js/three.min.js')
 	script(src='/dist/js/Tween.js')
 	script(src='/dist/js/animations.min.js')
+	script.
+		var song = !{JSON.stringify(song.body)}
+		var songID = "#{song.body.tracks.items[0].id}"
+		$(document).ready(function() {
+			$.post('/testAnalysis', {id: songID}, function(data) {
+				console.log(data)
+			})
+		})

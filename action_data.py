@@ -4,13 +4,6 @@ Created on Sun Oct  8 00:01:40 2017
 
 @author: Dhruva
 """
-
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Oct  6 00:56:38 2017
-
-@author: Dhruva
-"""
 import sys
 import json
 import numpy as np
