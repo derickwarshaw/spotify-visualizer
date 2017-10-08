@@ -62,9 +62,15 @@ passport.use(new SpotifyStrategy({
 		callbackURL: 'http://localhost:3000/callback'
 	},
 	function(accessToken, refreshToken, profile, done) {
-		console.log(accessToken)
-		console.log(refreshToken)
-		return done(null, profile)
+		process.nextTick(function() {
+			console.log('accessToken: ' + accessToken+'\n')
+			spotifyApi.setAccessToken(accessToken)
+			console.log()
+			console.log('refreshToken: ' + refreshToken+'\n')
+			spotifyApi.setRefreshToken(refreshToken)
+			console.log()
+			return done(null, profile)
+		})
 	}))
 
 // GET /auth/spotify
@@ -74,30 +80,50 @@ passport.use(new SpotifyStrategy({
 //   back to this application at /auth/spotify/callback
 app.get('/auth/spotify',
 	passport.authenticate('spotify', {
-		scope: ['user-read-email', 'user-read-private'],
-		showDialog: true
+		scope: ['user-read-private', 'user-read-playback-state', 'user-modify-playback-state', 'user-read-currently-playing']
 	}),
 	function(req, res) {
 		// The request will be redirected to spotify for authentication, so this
 		// function will not be called.
 	})
 
-// GET /callback
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request. If authentication fails, the user will be redirected back to the
-//   login page. Otherwise, the primary route function function will be called,
-//   which, in this example, will redirect the user to the home page.
+var SpotifyWebApi = require('spotify-web-api-node')
+var spotifyApi = new SpotifyWebApi({
+		clientId: process.env.CLIENT_ID,
+		clientSecret: process.env.CLIENT_SECRET,
+		redirectUri: 'http://localhost:3000/callback'
+	})
+	// GET /callback
+	//   Use passport.authenticate() as route middleware to authenticate the
+	//   request. If authentication fails, the user will be redirected back to the
+	//   login page. Otherwise, the primary route function function will be called,
+	//   which, in this example, will redirect the user to the home page.
 app.get('/callback',
 	passport.authenticate('spotify', {
 		failureRedirect: '/login'
 	}),
 	function(req, res) {
+		var code = req.query.code
+		console.log('query code: '+code)
+		// spotifyApi.authorizationCodeGrant(code)
+		// 	.then(function(data) {
+		// 		console.log('The token expires in ' + data.body['expires_in']);
+		// 		console.log('The access token is ' + data.body['access_token']);
+		// 		console.log('The refresh token is ' + data.body['refresh_token']);
+
+		// 		// Set the access token on the API object to use it in later calls
+		// 		spotifyApi.setAccessToken(data.body['access_token']);
+		// 		spotifyApi.setRefreshToken(data.body['refresh_token']);
+		// 	}, function(err) {
+		// 		console.log('Something went wrong in callback', err);
+		// 	});
 		res.redirect('/app')
 	})
 
+
 // Routes
 var routes = require('./routes/routes')
-routes(app)
+routes(app, spotifyApi)
 
 app.listen(app.get('port'), function() {
 	console.log("App is listening on port " + app.get('port'))

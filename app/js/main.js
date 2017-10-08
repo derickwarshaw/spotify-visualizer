@@ -9,7 +9,14 @@ $(document).ready( function() {
 			console.log(JSON.stringify(data.body.tracks.items[0].artists[0].name))
 			window.open(data.body.tracks.items[0].external_urls.spotify)
 
-			//startPlayback()
+			initPlayback()
 		})
 	})
 })
+
+function initPlayback() {
+	$.post('/app/initPlayback', function(data) {
+		$('#test').text(data.body.is_playing)
+		console.log(data)
+	})
+}

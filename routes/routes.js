@@ -1,23 +1,6 @@
 var passport = require('passport')
 
-var SpotifyWebApi = require('spotify-web-api-node')
-
-var spotifyApi = new SpotifyWebApi({
-	clientId: process.env.CLIENT_ID,
-	clientSecret: process.env.CLIENT_SECRET,
-	redirectUri: 'http://localhost:3000/callback'
-})
-
-// Get an access token and 'save' it using a setter
-spotifyApi.clientCredentialsGrant()
-	.then(function(data) {
-		console.log('The access token is ' + data.body['access_token']);
-		spotifyApi.setAccessToken(data.body['access_token']);
-	}, function(err) {
-		console.log('Something went wrong!', err);
-	});
-
-module.exports = function(app) {
+module.exports = function(app, spotifyApi) {
 	var bodyParser = require('body-parser')
 	app.use(bodyParser.json())
 	app.use(bodyParser.urlencoded({
@@ -53,17 +36,17 @@ module.exports = function(app) {
 		})
 	})
 
-	app.get('/app/testSearch', ensureAuthenticated, function(req, res) {
-		spotifyApi.searchTracks('artist:Love')
-			.then(function(data) {
-				res.render('app', {
-					user: req.user,
-					searchData: data.body
-				})
-			}, function(err) {
-				console.log('Something went wrong!', err);
-			});
-	})
+	// app.get('/app/testSearch', ensureAuthenticated, function(req, res) {
+	// 	spotifyApi.searchTracks('artist:Love')
+	// 		.then(function(data) {
+	// 			res.render('app', {
+	// 				user: req.user,
+	// 				searchData: data.body
+	// 			})
+	// 		}, function(err) {
+	// 			console.log('Something went wrong!', err);
+	// 		});
+	// })
 
 	app.post('/app', ensureAuthenticated, function(req, res) {
 		spotifyApi.searchTracks(req.body.song)
@@ -76,6 +59,16 @@ module.exports = function(app) {
 
 	app.get('/app/visualizer', /*ensureAuthenticated, */function(req, res) {
 		res.render('visualizer')
+	})
+
+	app.post('/app/initPlayback', ensureAuthenticated, function(req,res) {
+		spotifyApi.getMyCurrentPlaybackState({market: 'US'},function(err, data) {
+			if (err) {
+				res.send(err) 
+			}
+			console.log('data: '+JSON.stringify(data))
+			res.send(data)
+		})
 	})
 
 	// Simple route middleware to ensure user is authenticated.
