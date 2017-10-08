@@ -115,11 +115,11 @@ def smooth(starts, vals):
 
         
 def main():
-    filename = "sample_data.json"
-    with open(filename, "r") as my_file:
-        contents = my_file.read()
+  #  filename = "sample_data.json"
+  #  with open(filename, "r") as my_file:
+  #      contents = my_file.read()
         
-    #    contents = sys.stdin.readLines()
+        contents = sys.stdin.readLines()
         j = json.loads(contents)
         segments = []
         for s in j["segments"]:
