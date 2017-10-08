@@ -92,7 +92,7 @@ index = 0
 interval = keys[index]*1000
 
 var TO = function timeOut() {
-    doAction(map.get(keys[index]));
+    doAction(map.get(keys[index++]));
     console.log("fk ur mom")
     interval = (keys[index]-keys[index-1])*1000
     if(index!=keys.length)
