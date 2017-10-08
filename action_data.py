@@ -73,7 +73,7 @@ def stddev(starts, vals, rad):
         ind += 1
     return result
 
-def main():
+def main():        
     contents = sys.stdin.readlines()
     j = json.loads(contents)
     segments = []
@@ -86,7 +86,10 @@ def main():
                 s["loudness_max_time"],
                 s["loudness_start"],
                 s["timbre"]))
-    
+    beats = []
+    for b in j["beats"]:
+        beats.append(b["start"])
+        
 
     x = [s.start for s in segments]
     
@@ -145,19 +148,29 @@ def main():
         avgs.append(avg/count)
     rng = np.ptp(avgs)
     down = True
-    actions = []
+    actions = {}
+    excite_start = None
     for i in range(len(avgs)-1):
         cur = avgs[i]
         nxt = avgs[i+1]
-        if(down and nxt-cur > rng/4):
-            actions.append((criticals[i][0], "excite"))
+        if(down and nxt-cur > rng/8):
+            actions[criticals[i][0]] = "excite"
+            excite_start = criticals[i][0]
             down = False
-        elif(not down and cur-nxt > rng/4):
-            actions.append((criticals[i][0], "relax"))
+        elif(not down and (cur-nxt > rng/8)):
+            for b in beats:
+                if(excite_start < b < criticals[i][0]):
+                    actions[b] = "pulse"
+            excite_start = None
+            actions[criticals[i][0]] = "relax"
             down = True
+    if not down:
+        for b in beats:
+            if(excite_start < b):
+                actions[b] = "pulse"
     s=""
-    for a in actions:
-        s += str.format("{},{};", round(a[0], 2), a[1])
+    for k in actions.keys():
+        s += str.format("{},{};", round(k, 2), actions[k])
     s = s[:-1]
     print(s)
     
