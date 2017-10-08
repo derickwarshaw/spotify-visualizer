@@ -74,6 +74,10 @@ module.exports = function(app) {
 			});
 	})
 
+	app.get('/app/visualizer', /*ensureAuthenticated, */function(req, res) {
+		res.render('visualizer')
+	})
+
 	// Simple route middleware to ensure user is authenticated.
 	//   Use this route middleware on any resource that needs to be protected.  If
 	//   the request is authenticated (typically via a persistent login session),
