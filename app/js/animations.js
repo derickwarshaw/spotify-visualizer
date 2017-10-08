@@ -39,10 +39,7 @@ function initMountain() {
     loader.load('/dist/js/meshes/mountainrange.json', function(geometry, materials) {
         mountain = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial(materials, wireframe=true));
          mountain.scale.x = mountain.scale.y = mountain.scale.z = 0.79;
-        // mountain.position.y = 0.5
-        // mountain.translation = THREE.GeometryUtils.center(geometry);
-        scene.add(mountain);
-        //console.log(mountain)   
+        scene.add(mountain);   
         calcYCoords();
         calcUsefulYCoords();
     });
@@ -64,10 +61,7 @@ function initIsland() {
     var loader = new THREE.JSONLoader();
     loader.load('/dist/js/meshes/island.json', function(geometry, materials) {
         island = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial(materials, wireframe=true));
-        island.scale.x = island.scale.y = island.scale.z = 0.79;
-        // island.position.y = -4.76
-        // island.translation = THREE.GeometryUtils.center(geometry);
-        
+        island.scale.x = island.scale.y = island.scale.z = 0.79;        
         scene.add(island);
             })
 }
@@ -85,20 +79,18 @@ function calcYCoords(){
         console.log('no mountain')
         return;
     }
-    //console.log(mountain.geometry.vertices.length)
     for(var k = 0; k < mountain.geometry.vertices.length; k++){
         allYPoints.push(mountain.geometry.vertices[k].y)        
     }
 }
 
 function calcUsefulYCoords() {
-    var yMin = ( Math.max(allYPoints) - Math.min(allYPoints) ) * 0.8;
+    var yMin = ( Math.max.apply(null, allYPoints) - Math.min.apply(null, allYPoints) ) * 0.8;
     for(var i = 0; i < allYPoints.length; i++){
         if(mountain.geometry.vertices[i].y > yMin) {
             usefulYCoords.push(i)
         }
     }
-    
 }
 
 function animateMountainHeight(){
@@ -106,34 +98,21 @@ function animateMountainHeight(){
         return;
     }
     for(var j = 0; j < usefulYCoords.length; j++){
-        mountain.geometry.vertices.verticesNeedUpdate = true;
-        mountain.geometry.vertices[usefulYCoords[j]].y += .1;
-        
-        console.log(mountain.geometry.vertices[zPoints[j]].y);
+        if(mountain.geometry.vertices[usefulYCoords[j]].y >= 4){
+        console.log(mountain.geometry.vertices[usefulYCoords[j]].y);
+        mountain.geometry.vertices[usefulYCoords[j]].y += getRandomInt(-4, 4);
+        mountain.geometry.verticesNeedUpdate = true;
+    }
     }
 }
 
 function rotateMesh() {
-    if (!mountain) {
+    if (!mountain || !cloud) {
         return;
     }
-    //mesh.rotation.x -= SPEED * 2;
-    //mountain.rotation.y -= SPEED;
-    //cloud.rotation.y -= SPEED;
-    //island.rotation.y -= SPEED; 
-
-    // for(int i = 0; i < mountain.geometry.vertices.length; i++){
-    //     if(mountain.geometry.vertices[i].z > 100){            
-    //         //console.log(mountain.geometry.vertices[i].x)
-    //         //console.log(mountain.geometry.vertices[i].y)
-    //         //console.log(mountain.geometry.vertices[i].z)
-    //         console.log("this shoud be displaying if we are finding points above z=100")
-    //     }
-    //     console.log("this should display anyways")
-    // }
-    //for(var k = 0; k < mountain.geometry.vertices.length; k++)
-    //console.log(mountain.geometry.vertices[k].z)
-    //mesh.rotation.z -= SPEED * 3;
+    mountain.rotation.y -= SPEED;
+    cloud.rotation.y -= SPEED;
+    island.rotation.y -= SPEED; 
 }
 
 
