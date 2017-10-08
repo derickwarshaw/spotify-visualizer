@@ -4,7 +4,8 @@ var HEIGHT = window.innerHeight;
 var SPEED = 0.01;
 var allYPoints = []
 var usefulYCoords = []
-var amplitude = 0.15
+var amplitude = 0.05
+var state;
 clock = new THREE.Clock()
 
 clock.start();
@@ -77,7 +78,8 @@ function initCloud2() {
         cloud2.position.z = 4;
         cloud2.material.color.setStyle('white');
         scene.add(cloud2);
-    }
+    })
+}
                 
 var cloud3 = null;
 function initCloud3() {
@@ -147,14 +149,11 @@ var index = 0
 var period = 0
 
 var TO = function timeOut() {
-    doAction(map.get(keys[index]));
-    clock.start()
+    doAction(map.get(keys[index++]));
+    state = map.get(keys[index])
     interval = (keys[index]-keys[index-1])*1000;
-    period = 2*Math.PI/interval
-    console.log(period,interval)
     if(index!=keys.length)
         setTimeout(TO,interval)
-    index++;
 }
 
 function startPlayback(data) {
@@ -167,15 +166,21 @@ function startPlayback(data) {
     console.log("started timeout")
 }
 
-function doAction(param){
+function doAction(param) {
     switch(param) {
     case "excite":
+    //renderer.setClearColorHex(0xffffff, 0)
         amplitude = 0.1
-        //console.log("Excite")        
+        console.log("Excite")        
         break;
     case "relax":
+        //renderer.setClearColorHex(0x000000, 1)
+        amplitude = 0.03
+        console.log("relax...")        
+        break;
+    case "pulse":
         amplitude = 0.02
-        //console.log("relax...")        
+        console.log("pulse")        
         break;
     default:
         break;
@@ -199,7 +204,7 @@ function calcYCoords(){
 }
 
 function calcUsefulYCoords() {
-    var yMin = ( Math.max.apply(null, allYPoints) - Math.min.apply(null, allYPoints) ) * 0.7;
+    var yMin = ( Math.max.apply(null, allYPoints) - Math.min.apply(null, allYPoints) ) * 0.65;
     for(var i = 0; i < allYPoints.length; i++){
         if(mountain.geometry.vertices[i].y > yMin) {
             usefulYCoords.push(i)
@@ -212,16 +217,32 @@ function animateMountainHeight(){
         return;
     }
     for(var j = 0; j < usefulYCoords.length; j++){
-            var yStep = amplitude * Math.sin(clock.getElapsedTime()*period);
+            var yStep = amplitude * Math.sin(clock.getElapsedTime());
+            //console.log(clock.getElapsedTime()*period)
             mountain.geometry.vertices[usefulYCoords[j]].y += yStep;
             mountain.geometry.verticesNeedUpdate = true;
     }
 }
 function animateCloud(){
-        var scaleStep = amplitude * Math.sin(clock.getElapsedTime());
+        var sinScaleStep = (1/2) * amplitude * Math.sin(clock.getElapsedTime());
+        var cosScaleStep = (1/2) * amplitude * Math.sin(clock.getElapsedTime());
         //console.log(cloud1);
         //console.log(cloud1.scale)
-        cloud1.scale.x = cloud1.scale.y = cloud1.scale.z = 1.2
+        cloud1.scale.x += sinScaleStep 
+        cloud1.scale.y += cosScaleStep
+        cloud1.scale.z += sinScaleStep
+
+        cloud2.scale.x += cosScaleStep 
+        cloud2.scale.y += cosScaleStep
+        cloud2.scale.z += sinScaleStep
+
+        cloud3.scale.x += cosScaleStep 
+        cloud3.scale.y += sinScaleStep
+        cloud3.scale.z += cosScaleStep
+
+        cloud4.scale.x += sinScaleStep 
+        cloud4.scale.y += cosScaleStep
+        cloud4.scale.z += sinScaleStep
 }
 
 function rotateMesh() {
@@ -229,7 +250,10 @@ function rotateMesh() {
         return;
     }
     mountain.rotation.y -= SPEED;
-    //cloud.rotation.y -= SPEED;
+    cloud1.rotation.y -= SPEED;
+    cloud2.rotation.y -= SPEED;
+    cloud3.rotation.y -= SPEED;
+    cloud4.rotation.y -= SPEED;    
     island.rotation.y -= SPEED; 
 }
 
@@ -239,7 +263,12 @@ function render() {
     animateMountainHeight();
     animateCloud()    
     renderer.render(scene, camera);
+    console.log(state)
+    if (state == 'pulse')
+        renderer.setClearColorHex(0x000000, 1)
+    else
+        renderer.setClearColorHex(0x000000, 0)
 }
 
-init();
-render();
+init()
+render()

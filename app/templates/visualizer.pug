@@ -21,7 +21,7 @@ block content
 		var songID = "#{song.body.tracks.items[0].id}"
 		$(document).ready(function() {
 			$.post('/testAnalysis', {id: songID}, function(data) {
-				console.log(data)
+				//console.log(data)
 				startPlayback(data)
 				window.open("#{song.body.tracks.items[0].external_urls.spotify}")
 			})
