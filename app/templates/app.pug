@@ -4,8 +4,8 @@ block content
 	#app.container.flex.cl.center-both
 		h1.text-center Hello, #{user.displayName}!
 		p Search for a song:
-		form(action="/app", method="POST").flex.cl
-			input(type='text' placeholder='e.g. Ultralight Beam' name='song')
+		form(action="/app/visualizer", method="GET").flex.cl
+			input(type='text' placeholder='e.g. Line of Sight - Odesza' name='song' required)
 			button#search.btn-bright(type='submit') Visualize
 		#songs
 		#test
