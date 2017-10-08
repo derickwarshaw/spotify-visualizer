@@ -85,15 +85,18 @@ function data(data) {
     }
     return map
 }
-map = data("2.55,excite;7.33,relax;21.22,excite;30.29,relax;32.66,excite;55.77,relax;75.37,excite;87.39,relax;88.65,excite;99.63,relax;101.51,excite;106.23,relax;114.0,excite;131.37,excite;141.07,relax;160.71,excite;208.46,relax;214.33,excite;227.78,relax")
+var map = data("10.55,excite;19.33,relax;21.22,excite;30.29,relax;32.66,excite;55.77,relax;75.37,excite;87.39,relax;88.65,excite;99.63,relax;101.51,excite;106.23,relax;114.0,excite;131.37,excite;141.07,relax;160.71,excite;208.46,relax;214.33,excite;227.78,relax")
 var keys = Array.from(map.keys())
 
-index = 0
-interval = keys[index]*1000
+var index = 0
+var interval = keys[index]*1000
+var period = 0
 
 var TO = function timeOut() {
     doAction(map.get(keys[index++]));
+    clock.start()
     interval = (keys[index]-keys[index-1])*1000
+    period = 2*Math.PI/interval
     if(index!=keys.length)
         setTimeout(TO,interval)
 }
@@ -144,7 +147,7 @@ function animateMountainHeight(){
         return;
     }
     for(var j = 0; j < usefulYCoords.length; j++){
-            var yStep = amplitude * Math.sin(clock.getElapsedTime());
+            var yStep = amplitude * Math.sin(clock.getElapsedTime()*period);
             mountain.geometry.vertices[usefulYCoords[j]].y += yStep;
             mountain.geometry.verticesNeedUpdate = true;
     }
